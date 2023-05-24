@@ -1,5 +1,6 @@
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
+from rest_framework.exceptions import ValidationError
 
 
 class BaseModel(models.Model):
@@ -15,7 +16,11 @@ class Author(BaseModel):
     picture = models.ImageField(upload_to='authors', null=True, blank=True)
 
     def __str__(self):
-        return self.name
+        return self.name + ' ' + self.surname
+
+    class Meta:
+        verbose_name = 'Автор'
+        verbose_name_plural = 'Авторы'
 
 
 class Book(BaseModel):
@@ -24,6 +29,13 @@ class Book(BaseModel):
     pages = models.PositiveIntegerField()
     quantity = models.PositiveIntegerField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Книга'
+        verbose_name_plural = 'Книги'
 
 class Reader(BaseModel):
     class Status(models.TextChoices):
@@ -35,4 +47,10 @@ class Reader(BaseModel):
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
     active_books = models.ManyToManyField(Book, related_name='readers', blank=True, max_length=3)
 
+    def __str__(self):
+        return self.name + ' ' + self.surname
+
+    class Meta:
+        verbose_name = 'Читатель'
+        verbose_name_plural = 'Читатели'
 
