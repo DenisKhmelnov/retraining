@@ -16,7 +16,7 @@ class Author(BaseModel):
     picture = models.ImageField(upload_to='authors', null=True, blank=True)
 
     def __str__(self):
-        return self.name + ' ' + self.surname
+        return f'{self.name} {self.surname}'
 
     class Meta:
         verbose_name = 'Автор'
