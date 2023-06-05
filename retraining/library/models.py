@@ -28,7 +28,7 @@ class Author(BaseModel):
 class Book(BaseModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    pages = models.PositiveIntegerField()
+    pages = models.IntegerField()
     quantity = models.PositiveIntegerField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
 
