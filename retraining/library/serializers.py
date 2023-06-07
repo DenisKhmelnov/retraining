@@ -30,6 +30,7 @@ class BookSerializer(ModelSerializer):
 
 class ReaderSerializer(ModelSerializer):
     phone = serializers.CharField(validators=[PhoneValidator()])
+
     class Meta:
         model = Reader
         fields = [

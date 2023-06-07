@@ -6,6 +6,7 @@ from rest_framework import serializers
 class PhoneValidator:
     def __init__(self):
         pass
+
     def __call__(self, value: str):
         errors = []
         if len(value) < 12:
@@ -19,10 +20,13 @@ class PhoneValidator:
         if errors:
             raise ValidationError(errors)
 
+
 class PagesValidator:
     def __init__(self):
         pass
+
     def __call__(self, value: int):
         if value <= 0:
             message = "Number of pages can't be negative or equal to zero"
             raise serializers.ValidationError(message)
+
