@@ -24,7 +24,7 @@ class BookAdmin(admin.ModelAdmin):
 class ReaderAdmin(admin.ModelAdmin):
     list_display = ('id','name','surname','phone','status')
     list_filter = ('status',)
-    actions = ('change_status',)
+    actions = ('change_status', 'remove_all_books')
 
     @admin.action(description="Изменить статус участника")
     def change_status(self, request, qs: QuerySet):
@@ -33,6 +33,11 @@ class ReaderAdmin(admin.ModelAdmin):
                 if reader.status == Reader.Status.INACTIVE\
                 else Reader.Status.INACTIVE
             reader.save()
+
+    @admin.action(description="Удалить все книги у читателя")
+    def remove_all_books(self, request, queryset):
+        for reader in queryset:
+            reader.active_books.clear()
 
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'surname', 'picture')
