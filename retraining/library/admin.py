@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.db.models import QuerySet
 from django.urls import reverse
 from django.utils.html import format_html
 
@@ -18,6 +19,15 @@ class BookAdmin(admin.ModelAdmin):
 class ReaderAdmin(admin.ModelAdmin):
     list_display = ('id','name','surname','phone','status')
     list_filter = ('status',)
+    actions = ('change_status',)
+
+    @admin.action(description="Изменить статус участника")
+    def change_status(self, request, qs: QuerySet):
+        for reader in qs:
+            reader.status = Reader.Status.ACTIVE\
+                if reader.status == Reader.Status.INACTIVE\
+                else Reader.Status.INACTIVE
+            reader.save()
 
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'surname', 'picture')
