@@ -1,6 +1,8 @@
+from rest_framework import serializers
 from rest_framework.serializers import ModelSerializer
 
 from retraining.library.models import Author, Book, Reader
+from retraining.library.validators import PhoneValidator, PagesValidator
 
 
 class AuthorSerializer(ModelSerializer):
@@ -14,6 +16,7 @@ class AuthorSerializer(ModelSerializer):
 
 
 class BookSerializer(ModelSerializer):
+    pages = serializers.IntegerField(validators=[PagesValidator()])
     class Meta:
         model = Book
         fields = ["id",
@@ -26,6 +29,8 @@ class BookSerializer(ModelSerializer):
 
 
 class ReaderSerializer(ModelSerializer):
+    phone = serializers.CharField(validators=[PhoneValidator()])
+
     class Meta:
         model = Reader
         fields = [

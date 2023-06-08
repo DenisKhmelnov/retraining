@@ -2,6 +2,8 @@ from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.exceptions import ValidationError
 
+from retraining.library.validators import PhoneValidator
+
 
 class BaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -26,7 +28,7 @@ class Author(BaseModel):
 class Book(BaseModel):
     title = models.CharField(max_length=255)
     description = models.TextField()
-    pages = models.PositiveIntegerField()
+    pages = models.IntegerField()
     quantity = models.PositiveIntegerField()
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='books')
 
@@ -43,7 +45,7 @@ class Reader(BaseModel):
         INACTIVE = 'inactive', 'Неактивен'
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    phone = PhoneNumberField()
+    phone = models.CharField(max_length=12)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
     active_books = models.ManyToManyField(Book, related_name='readers', blank=True, max_length=3)
 
