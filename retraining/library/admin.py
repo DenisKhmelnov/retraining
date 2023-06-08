@@ -9,12 +9,17 @@ from retraining.library.models import Book, Reader, Author
 class BookAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'description', 'author_link', 'quantity')
     list_display_links = ('title',)
+    actions = ('set_quantity_to_zero',)
 
     def author_link(self, obj):
         url = reverse("admin:library_author_change", args=[obj.author.id])
         return format_html('<a href="{}">{}</a>', url, obj.author)
 
     author_link.short_description = 'Author'
+
+    @admin.action(description="Установить количество в ноль")
+    def set_quantity_to_zero(self, request, qs: QuerySet):
+        qs.update(quantity=0)
 
 class ReaderAdmin(admin.ModelAdmin):
     list_display = ('id','name','surname','phone','status')
