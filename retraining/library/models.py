@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 from phonenumber_field.modelfields import PhoneNumberField
 from rest_framework.exceptions import ValidationError
@@ -48,6 +49,7 @@ class Reader(BaseModel):
     phone = models.CharField(max_length=12)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
     active_books = models.ManyToManyField(Book, related_name='readers', blank=True, max_length=3)
+    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name + ' ' + self.surname
