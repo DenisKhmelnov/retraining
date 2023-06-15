@@ -6,7 +6,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from retraining.library.models import Author, Book, Reader
 from retraining.library.permissions import IsOwner
-from retraining.library.serializers import AuthorSerializer, BookSerializer, ReaderSerializer
+from retraining.library.serializers import AuthorSerializer, BookSerializer, ReaderSerializer, ReaderCreateSerializer
 
 
 class AuthorViewSet(ModelViewSet):
@@ -36,6 +36,11 @@ class BookViewSet(ModelViewSet):
 class ReaderViewSet(ModelViewSet):
     queryset = Reader.objects.all()
     serializer_class = ReaderSerializer
+
+    def get_serializer_class(self):
+        if self.action == 'create':
+            self.serializer_class = ReaderCreateSerializer
+        return self.serializer_class
 
     def perform_create(self, serializer):
         books = serializer.validated_data.get('active_books')

@@ -40,16 +40,28 @@ class Book(BaseModel):
         verbose_name = 'Книга'
         verbose_name_plural = 'Книги'
 
+# class Reader(BaseModel):
+#     class Status(models.TextChoices):
+#         ACTIVE = 'active', 'Активен'
+#         INACTIVE = 'inactive', 'Неактивен'
+#     name = models.CharField(max_length=255)
+#     surname = models.CharField(max_length=255)
+#     phone = models.CharField(max_length=12)
+#     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
+#     active_books = models.ManyToManyField(Book, related_name='readers', blank=True, max_length=3)
+#     user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
+
 class Reader(BaseModel):
     class Status(models.TextChoices):
         ACTIVE = 'active', 'Активен'
         INACTIVE = 'inactive', 'Неактивен'
+
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     phone = models.CharField(max_length=12)
     status = models.CharField(max_length=10, choices=Status.choices, default=Status.ACTIVE)
     active_books = models.ManyToManyField(Book, related_name='readers', blank=True, max_length=3)
-    user = models.ForeignKey(User, verbose_name="Пользователь", on_delete=models.CASCADE)
+    user = models.OneToOneField(User, verbose_name="Пользователь", on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name + ' ' + self.surname

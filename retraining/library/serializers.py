@@ -46,42 +46,35 @@ class ReaderSerializer(ModelSerializer):
             ]
 
 
-class ReaderCreateSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(max_length=150)
+class UserCreateSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
+
+    class Meta:
+        model = User
+        fields = ['username', 'password']
+
+
+class ReaderCreateSerializer(serializers.ModelSerializer):
+    user = UserCreateSerializer()
     phone = serializers.CharField(validators=[PhoneValidator()])
 
     class Meta:
         model = Reader
         fields = [
-            "name",
-            "surname",
-            "phone",
-            "status",
-            "active_books",
-            "username",
-            "password"
+            'id',
+            'name',
+            'surname',
+            'phone',
+            'status',
+            'active_books',
+            'user',
         ]
 
     def create(self, validated_data):
-        # Создание пользователя
-        username = validated_data.get('username')
-        password = validated_data.get('password')
-        user = User.objects.create_user(username=username, password=password)
-
-        # Создание читателя
-        reader = Reader.objects.create(
-            user=user,
-            name=validated_data.get('name'),
-            surname=validated_data.get('surname'),
-            phone=validated_data.get('phone'),
-            status=validated_data.get('status')
-        )
-
-        # Добавление активных книг
-        active_books = validated_data.get('active_books')
-        for book in active_books:
-            reader.active_books.add(book)
-
+        user_data = validated_data.pop('user')
+        password = user_data.pop('password')
+        books = validated_data.pop('active_books', [])
+        user = User.objects.create_user(password=password, **user_data)
+        reader = Reader.objects.create(user=user, **validated_data)
+        reader.active_books.set(books)
         return reader
-
